@@ -24,6 +24,7 @@
     {
       "binding": "DB",
       "database_name": "leetzone",
+      "database_id": "2cd05933-f57a-47f9-a178-c1570b81ea8b",
       "migrations_dir": "migrations"
     }
   ],
