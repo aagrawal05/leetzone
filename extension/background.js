@@ -130,7 +130,9 @@ const handlers = {
 
 function allowed(handler, sender) {
   if (sender.id !== chrome.runtime.id) return false;
-  if (sender.frameId !== undefined && sender.frameId !== 0) return false;
+  // Top frames only. A prerendered page's top frame has a non-zero frameId, and
+  // the site does not repeat its session once that page is shown.
+  if (sender.frameId && sender.documentLifecycle !== "prerender") return false;
   return handler.from.has(sender.origin);
 }
 

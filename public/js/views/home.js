@@ -111,9 +111,13 @@ function play() {
   );
 }
 
+/** Returns {el, stop}. Keeps asking while the server cannot be reached. */
 function topFive() {
   const body = h("div", h("p.muted.small", "loading"));
-  api.leaderboard().then(({ rows }) => {
+  let closed = false;
+  let retry = 0;
+  const load = () => api.leaderboard().then(({ rows }) => {
+    if (closed) return;
     const top = [...rows].sort((a, b) => b.totalScore - a.totalScore).slice(0, 5);
     if (!top.length) return replace(body, h("p.muted", "No matches played yet. Be the first."));
     const best = top[0].totalScore || 1;
@@ -123,25 +127,33 @@ function topFive() {
       h("span.bar", { "aria-hidden": "true" }, h("i", { style: `width:${Math.max(2, (row.totalScore / best) * 100)}%` })),
       h("span", num(row.totalScore)),
     ))));
-  }, (err) => replace(body, h("p.muted.small", explain(err))));
+  }, () => {
+    if (closed) return;
+    replace(body, h("p.muted.small.reconnecting", "Can't reach the server. Retrying"));
+    retry = setTimeout(load, 4000);
+  });
+  load();
 
-  return h("section",
+  const el = h("section",
     h("div.row.between", h("h2", "top players"), h("a.small", { href: "/leaderboard" }, "full leaderboard")),
     body,
   );
+  return { el, stop: () => { closed = true; clearTimeout(retry); } };
 }
 
 export function mount(root) {
   document.title = "leetzone";
   const me = session.player();
+  const top = topFive();
   if (!me) {
     replace(root,
       h("section", h("h1", "Race your friends on LeetCode."), h("p.muted", "Make a lobby, pick the difficulty and topics, and solve on leetcode.com. The extension reports your submissions; the scoreboard updates live.")),
       h("section", nameForm()),
-      topFive(),
+      top.el,
     );
     root.querySelector("input")?.focus();
-    return;
+  } else {
+    replace(root, play(), top.el);
   }
-  replace(root, play(), topFive());
+  return top.stop;
 }

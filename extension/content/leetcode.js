@@ -8,6 +8,7 @@
   if (window.top !== window) return;
 
   const HOOK_GRACE_MS = 6000; // how long the page's own polling gets before ours starts
+  const PENDING_KEY = "leetzone.pending"; // sessionStorage: this tab's submissions still being judged
   const REPORT_RETRY_MS = [1000, 2000, 4000, 8000];
   // The lobby poll is shorter than the 5 s countdown, so a tab waiting here
   // always sees the countdown before the first question opens.
@@ -26,8 +27,8 @@
   let tickTimer = 0;
   let urlTimer = 0;
   let observer = null;
-  let lcUsername = null; // a promise once asked for
-  const tracked = new Map(); // submissionId -> {slug, lang, timer, settled}
+  let lcUsername; // the LeetCode handle: undefined until asked for, null until known
+  const tracked = new Map(); // submissionId -> {slug, lang, at, timer, settled}
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const serverNow = () => Date.now() + clockOffset;
@@ -72,6 +73,47 @@
   }
 
   // ---- submissions --------------------------------------------------------
+  // Profile metadata only: looked up once per page, and never waited for.
+  function askLcUsername() {
+    if (lcUsername !== undefined) return;
+    lcUsername = null;
+    fetchLcUsername().then((name) => (lcUsername = name));
+  }
+
+  // What is still being judged is kept per tab, so that a reload or a full
+  // navigation (the HUD's own links) before the verdict can pick it up again.
+  function savePending() {
+    const list = [];
+    for (const [id, t] of tracked) if (t.at && !t.settled) list.push({ id, slug: t.slug, lang: t.lang, at: t.at });
+    try {
+      sessionStorage.setItem(PENDING_KEY, JSON.stringify(list));
+    } catch {}
+  }
+  function resumePending() {
+    let list = null;
+    try {
+      list = JSON.parse(sessionStorage.getItem(PENDING_KEY));
+    } catch {}
+    for (const p of Array.isArray(list) ? list : []) {
+      if (typeof p?.id !== "string" || !/^\d{1,32}$/.test(p.id) || typeof p.slug !== "string") continue;
+      const age = Date.now() - p.at;
+      if (tracked.has(p.id) || typeof p.at !== "number" || !(age >= 0 && age < JUDGE_MAX_MS)) continue;
+      const t = { slug: p.slug, lang: typeof p.lang === "string" ? p.lang : null, at: p.at, timer: 0, settled: false };
+      tracked.set(p.id, t);
+      askLcUsername();
+      watch(p.id, t, 0); // the page that was polling for it is gone
+    }
+    savePending();
+  }
+  // Asks LeetCode ourselves, `after` ms from now, unless the hook delivers first.
+  function watch(id, t, after) {
+    clearTimeout(t.timer);
+    t.timer = setTimeout(async () => {
+      const verdict = await pollVerdict(id, t.lang, () => dead || t.settled, t.at + JUDGE_MAX_MS - Date.now());
+      if (verdict) settle(id, t, verdict);
+    }, after);
+  }
+
   function onHookMessage(event) {
     if (dead || event.source !== window || event.origin !== location.origin) return;
     const msg = event.data;
@@ -85,17 +127,16 @@
     if (t.settled) return;
 
     if (msg.type === "submit") {
-      lcUsername ??= fetchLcUsername();
-      clearTimeout(t.timer);
-      t.timer = setTimeout(async () => {
-        const verdict = await pollVerdict(id, t.lang, () => dead || t.settled);
-        if (verdict) settle(id, t, verdict);
-      }, HOOK_GRACE_MS);
+      askLcUsername();
+      t.at = Date.now();
+      watch(id, t, HOOK_GRACE_MS);
+      savePending();
     } else if (msg.type === "result" && Number.isInteger(msg.statusCode)) {
       settle(id, t, msg);
     } else if (msg.type === "error") {
       t.settled = true;
       clearTimeout(t.timer);
+      savePending();
     }
   }
 
@@ -103,6 +144,7 @@
     if (t.settled) return;
     t.settled = true;
     clearTimeout(t.timer);
+    savePending();
     const count = (v) => (Number.isInteger(v) ? v : null);
     const report = {
       slug: t.slug,
@@ -112,7 +154,7 @@
       totalCorrect: count(verdict.totalCorrect),
       totalTestcases: count(verdict.totalTestcases),
       lang: typeof verdict.lang === "string" ? verdict.lang : t.lang,
-      lcUsername: await (lcUsername ??= fetchLcUsername()),
+      lcUsername: lcUsername ?? null,
     };
     const before = snapshot;
     // Reports are idempotent on submissionId, so a blip is worth retrying.
@@ -246,6 +288,7 @@
         if (!dead && area === "local" && changes.session) setSession(changes.session.newValue ?? null);
       });
       setSession(saved.session ?? null);
+      if (inLobby()) resumePending();
     } catch {
       return teardown();
     }

@@ -56,6 +56,15 @@ test("unsolved earns up to half of base for test cases passed", () => {
   assert.equal(scoreQuestion(input({ accuracy: 0 })).points, 0);
 });
 
+test("exact halves round up despite floating point", () => {
+  // 0.5 * 200 * (23 / 40) - 200 * 0.05 = 47.5, but evaluates to 47.49999999999999.
+  const medium = scoreQuestion(input({ difficulty: "Medium", accuracy: 23 / 40, wrong: 1 }));
+  assert.equal(medium.points, 48);
+  assert.deepEqual(medium.breakdown, { accuracy: 58, speed: 0, penalty: 10 });
+  // 17.5 - 15 = 2.5, where 0.05 * 3 is 0.15000000000000002.
+  assert.equal(scoreQuestion(input({ accuracy: 7 / 20, wrong: 3 })).points, 3);
+});
+
 test("accuracy is clamped, and is 1 once solved", () => {
   assert.equal(scoreQuestion(input({ accuracy: 7 })).breakdown.accuracy, 50);
   assert.equal(scoreQuestion(input({ accuracy: -1 })).breakdown.accuracy, 0);

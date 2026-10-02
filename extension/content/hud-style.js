@@ -25,6 +25,8 @@ var HUD_CSS = `
   color: var(--fg); background: var(--bg);
   border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow);
   overflow: hidden;
+  /* Never taller than the viewport: the body scrolls instead. */
+  display: flex; flex-direction: column; max-height: 100vh;
 }
 .panel.collapsed { width: auto; }
 .panel.collapsed .body { display: none; }
@@ -50,7 +52,7 @@ var HUD_CSS = `
 .toggle:hover { color: var(--fg); background: var(--line); }
 .toggle:focus-visible, a:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }
 
-.body { padding: 10px; display: grid; gap: 8px; }
+.body { padding: 10px; display: grid; gap: 8px; overflow-y: auto; }
 .head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .clock { font-size: 22px; line-height: 1.2; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .panel[data-phase="countdown"] .head { flex-direction: column; align-items: center; gap: 0; padding: 6px 0; }
@@ -108,6 +110,7 @@ a { color: inherit; text-decoration: none; }
 .flash {
   padding: 5px 8px; border-radius: 6px; border: 1px solid currentColor;
   animation: flash 240ms ease-out;
+  position: sticky; bottom: 0; background: var(--bg); /* in view even when the body scrolls */
 }
 .flash.good { color: var(--good); }
 .flash.bad { color: var(--hard); }

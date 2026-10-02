@@ -263,7 +263,8 @@ input[type="checkbox"] { flex: none; width: 16px; height: 16px; margin: 0; accen
 .counting .clock { font-size: clamp(96px, 30vw, 168px); color: var(--accent); }
 .drain { width: 100%; height: 4px; background: var(--surface); border-radius: 2px; overflow: hidden; }
 .drain i { display: block; height: 100%; background: var(--fg); transform-origin: left; transition: background-color var(--slow); }
-.urgent .clock { color: var(--hard); animation: throb 1s ease-in-out infinite; }
+/* .timer: outranks the countdown's .clock.pop, which the element keeps. */
+.timer.urgent .clock { color: var(--hard); animation: throb 1s ease-in-out infinite; }
 .urgent .drain i { background: var(--hard); }
 
 .dots { display: flex; gap: 8px; margin-top: 8px; }
@@ -284,7 +285,8 @@ input[type="checkbox"] { flex: none; width: 16px; height: 16px; margin: 0; accen
 .out { font-size: 13px; }
 
 .sb-wrap { overflow-x: auto; margin: 0 -20px; padding: 0 20px; }
-.sb { min-width: max-content; font-size: 14px; }
+/* The name column shrinks and ellipsizes before the question columns overflow. */
+.sb { min-width: min-content; font-size: 14px; }
 .sb-row {
   display: grid;
   /* Question cells flow into implicit columns, however many there are. */

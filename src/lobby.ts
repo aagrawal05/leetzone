@@ -137,6 +137,9 @@ export class Lobby extends DurableObject<Env> {
 
   async webSocketClose(ws: WebSocket): Promise<void> {
     if (ws.deserializeAttachment()) this.broadcast(ws);
+    // Complete the close handshake, or the client waits out its own timeout.
+    // A no-op where the runtime has already replied.
+    ws.close();
   }
 
   async webSocketError(ws: WebSocket): Promise<void> {
@@ -154,7 +157,8 @@ export class Lobby extends DurableObject<Env> {
     if (!before) return { ok: false, code: "not_found", message: "no such lobby" };
     const now = Date.now();
     // Deadlines that passed before the alarm got here still apply first.
-    let state = game.tick(before, now);
+    const ticked = game.tick(before, now);
+    let state = ticked;
     let failed: LobbyResult | undefined;
     try {
       state = change(state, now);
@@ -164,8 +168,11 @@ export class Lobby extends DurableObject<Env> {
 
     if (state !== before) {
       this.ctx.storage.kv.put(STATE, state);
-      if (before.phase !== "finished" && state.phase === "finished") {
-        const record = matchRecord(state);
+      // The match as it finished, even if a late deadline and a `reset` both
+      // landed in this one event and it is already gone from `state`.
+      const finished = [state, ticked].find((s) => s.phase === "finished");
+      if (before.phase !== "finished" && finished) {
+        const record = matchRecord(finished);
         if (record) this.ctx.storage.kv.put(PENDING + record.matchId, record);
       }
       this.broadcast();
@@ -178,7 +185,9 @@ export class Lobby extends DurableObject<Env> {
   /** Writes finished matches to D1. A failure leaves the marker in storage and
    *  `arm` schedules a retry, so a result is never lost. */
   private async flushPending(): Promise<void> {
-    for (const [key, record] of this.ctx.storage.kv.list<MatchRecord>({ prefix: PENDING })) {
+    // Read up front: a `kv.list` iterator does not survive another request
+    // listing while this one awaits D1.
+    for (const [key, record] of [...this.ctx.storage.kv.list<MatchRecord>({ prefix: PENDING })]) {
       try {
         await recordMatch(this.env.DB, record);
         this.ctx.storage.kv.delete(key);

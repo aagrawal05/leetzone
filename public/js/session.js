@@ -90,15 +90,18 @@ function onMessage(event) {
 
 // ---- boot ------------------------------------------------------------------
 
-/** Handle a /#token=... login link: verify, store, strip the fragment.
- *  Resolves to "ok", "bad" or null (no link). */
-async function consumeLoginLink() {
+/** Handle a /#token=... login link: strip the fragment, verify, store.
+ *  Resolves to "ok", "bad", "busy" or null (no link). A link never replaces a
+ *  different player already signed in here: their token exists nowhere else. */
+export async function consumeLoginLink() {
   const match = /^#token=(.+)$/.exec(location.hash);
   if (!match) return null;
   history.replaceState(history.state, "", location.pathname + location.search);
-  const tok = decodeURIComponent(match[1]);
   try {
-    signIn(tok, await api.me(tok));
+    const tok = decodeURIComponent(match[1]);
+    const who = await api.me(tok);
+    if (session && session.token !== tok) return "busy";
+    signIn(tok, who);
     return "ok";
   } catch {
     return "bad";

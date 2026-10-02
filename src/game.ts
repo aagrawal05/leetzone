@@ -50,7 +50,7 @@ export interface LobbyState {
   version: number;
   /** Every slug drawn in this lobby, so a rematch gets fresh questions. */
   playedSlugs: string[];
-  /** Submission ids already counted in this match. */
+  /** `playerId:submissionId` for every report already counted in this match. */
   seenSubmissions: string[];
 }
 
@@ -137,6 +137,8 @@ export function join(state: LobbyState, player: Player, now: number): LobbyState
     else s.players.push({ id: player.id, name: player.name, left: false, results: [] });
     fixHost(s);
     pushFeed(s, now, { kind: "join", playerId: player.id });
+    // Back with everything solved, and nobody else still working on it.
+    endRoundIfAllSolved(s, now);
   });
 }
 
@@ -257,7 +259,9 @@ export function submit(state: LobbyState, playerId: string, rawReport: unknown, 
   const player = state.players.find((p) => p.id === playerId);
   if (!player || player.left) throw new GameError("not_in_lobby", "you are not in this lobby");
   const report = parseReport(rawReport);
-  if (state.seenSubmissions.includes(report.submissionId)) return state;
+  // Per player: nobody can use up an id another player is about to report.
+  const seen = `${playerId}:${report.submissionId}`;
+  if (state.seenSubmissions.includes(seen)) return state;
 
   const index = state.questions.findIndex((q) => q.slug === report.slug);
   const question = state.questions[index];
@@ -295,7 +299,7 @@ export function submit(state: LobbyState, playerId: string, rawReport: unknown, 
     });
     result.points = score.points;
     result.breakdown = score.breakdown;
-    s.seenSubmissions.push(report.submissionId);
+    s.seenSubmissions.push(seen);
     pushFeed(s, now, { kind: accepted ? "solve" : "attempt", playerId, questionIndex: index, points: result.points });
     if (accepted) endRoundIfAllSolved(s, now);
   });

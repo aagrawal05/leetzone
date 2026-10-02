@@ -24,6 +24,8 @@ export function create(ctx) {
   let pending = {};
   let timer = 0;
   let showAll = false;
+  // The minutes field holds text the host has typed but not yet committed.
+  let typing = false;
 
   const view = () => ({ ...config, ...pending });
 
@@ -93,7 +95,10 @@ export function create(ctx) {
 
   const limit = h("input", {
     type: "number", inputmode: "numeric", step: 1, "aria-label": "time limit in minutes",
+    oninput: () => { typing = true; },
+    onblur: () => { typing = false; },
     onchange: () => {
+      typing = false;
       const range = meta.limits.timeLimitSec[view().timerMode];
       const sec = clamp(Math.round(Number(limit.value) || 0) * 60, range);
       limit.value = minutes(sec);
@@ -154,7 +159,7 @@ export function create(ctx) {
     limit.max = minutes(range.max);
     limit.disabled = !editable;
     // Do not fight the host's typing; the change handler normalizes on commit.
-    if (document.activeElement !== limit) limit.value = minutes(c.timeLimitSec);
+    if (!typing) limit.value = minutes(c.timeLimitSec);
     text(limitNote, c.timerMode === "per_question" ? "minutes per question" : "minutes for the whole match");
 
     paid.checked = c.includePaid;
@@ -168,6 +173,11 @@ export function create(ctx) {
       editable = canEdit;
       if (!editable) pending = {};
       render();
+    },
+    /** Send an edit still waiting out its debounce now; resolves once the server has answered. */
+    flush() {
+      clearTimeout(timer);
+      if (Object.keys(pending).length) return send();
     },
     destroy: () => clearTimeout(timer),
   };

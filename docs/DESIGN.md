@@ -61,6 +61,10 @@ Two principles hold the design together:
 - A login link `/#token=<token>` signs another device in as the same player.
   The site reads it, verifies it with `GET /api/me`, stores it and strips the
   fragment from the URL.
+  It is refused while a different player is signed in, so a link cannot swap
+  someone's account out from under them. The link is the credential, and the
+  browser keeps it in history after the fragment is stripped: treat it like a
+  password and use it only on your own devices.
 - Submission reports are trusted. This is a game between friends; the hook can
   be bypassed by anyone determined to. `SubmissionReport.submissionId` leaves
   room to verify against LeetCode later.
@@ -132,7 +136,7 @@ points          = max(0, round(accuracy points + speed points - penalty))
   earns half. Five or more wrong submissions cost a quarter.
 - An unsolved question still earns up to half of `base` for test cases passed.
 - A submission counts only for an open question in the running match, from a
-  player in it, and only once per `submissionId`. After a player solves a
+  player in it, and only once per player and `submissionId`. After a player solves a
   question, further submissions to it are ignored.
 - Match score is the sum. Standings sort by score, then questions solved, then
   total solve time (lower first), then name. Equal score, solved and time share
@@ -173,8 +177,8 @@ header, and an unexpected failure is 500 with code `internal`.
 Lobby codes are 5 characters from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no
 look-alikes), matched case-insensitively; a code nobody created is `not_found`
 on every lobby route. `join` is idempotent. A report for an unknown or closed
-question, or outside `running`, is `question_closed`; a repeated `submissionId`
-returns the current snapshot unchanged.
+question, or outside `running`, is `question_closed`; a `submissionId` the same
+player already reported returns the current snapshot unchanged.
 
 No CORS headers. The site is same-origin, and the extension's service worker
 has host permission for the LeetZone origins, so its requests are not subject
@@ -202,7 +206,7 @@ question). A finished match is written in one batch, keyed by `matchId`, with
 in it, or where nobody submitted anything, is not recorded.
 
 Leaderboard and profile totals are computed from these tables on read. A win is
-rank 1 in a match with at least two players.
+rank 1 with a score above zero in a match with at least two players.
 
 ## Site (`public/`)
 
@@ -264,7 +268,9 @@ until `state` is `SUCCESS` (and `ai_state`, when present, has settled).
 `/vN/`, and the legacy unversioned form), ignores "Run" (`runcode_` /
 `interpret_` ids), and posts exactly one `result` per submission id. If the
 page's own polling never yields a verdict, `leetcode.js` polls the check URL
-itself for a while. A verdict of 10 whose `compare_result` contains a failed
+itself for a while. A submission still being judged is remembered in the tab's
+`sessionStorage`, so a reload or a full navigation mid-judging resumes it
+instead of losing it. A verdict of 10 whose `compare_result` contains a failed
 case is reported as Wrong Answer, as the site itself shows it. These endpoints
 are private and have changed before; everything about them is in `hook.js`.
 

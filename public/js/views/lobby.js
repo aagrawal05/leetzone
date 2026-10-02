@@ -30,18 +30,24 @@ export function mount(root, rawCode) {
   let currentModule = null;
   let closed = false;
   let metaTimer = 0;
+  let acting = false;
 
   const ctx = {
     code,
     get meta() { return meta; },
     now: () => live.now(),
     accept: (s) => live.accept(s),
-    /** Run a command; its snapshot is rendered like any other. */
+    /** Run a command; its snapshot is rendered like any other. One at a time:
+     *  a second click while the first is still out is dropped. */
     async act(command) {
+      if (acting) return;
+      acting = true;
       try {
         live.accept(await command());
       } catch (err) {
         toast(explain(err), "bad");
+      } finally {
+        acting = false;
       }
     },
   };

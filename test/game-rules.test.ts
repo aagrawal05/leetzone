@@ -89,6 +89,29 @@ test("if everyone leaves, only the clock or the host ends the round", () => {
   assert.equal(s.hostId, "b", "the first one back takes the host seat");
 });
 
+test("coming back already solved ends a round nobody else is working on", () => {
+  for (const timerMode of ["per_question", "overall"] as const) {
+    let s = running({ timerMode, questionCount: 1, timeLimitSec: 3600 });
+    s = game.submit(s, ALICE.id, report("p1"), OPEN + 1_000);
+    s = game.leave(s, ALICE.id, OPEN + 2_000);
+    s = game.leave(s, BOB.id, OPEN + 3_000);
+    assert.equal(s.phase, "running", "nobody is here to end it for");
+    s = game.join(s, ALICE, OPEN + 4_000);
+    assert.deepEqual([s.phase, s.endedAt], ["finished", OPEN + 4_000], timerMode);
+  }
+  let s = running();
+  s = game.leave(s, BOB.id, OPEN + 1);
+  assert.equal(game.join(s, BOB, OPEN + 2).phase, "running", "back unsolved: the round waits");
+});
+
+test("submission ids are counted once per player, not once per lobby", () => {
+  let s = running();
+  s = game.submit(s, ALICE.id, wrong("p1", 5, { submissionId: "777" }), OPEN + 1);
+  assert.equal(game.submit(s, ALICE.id, wrong("p1", 5, { submissionId: "777" }), OPEN + 2), s, "a repeat is a no-op");
+  s = game.submit(s, BOB.id, report("p1", { submissionId: "777" }), OPEN + 3);
+  assert.equal(s.players[1]!.results[0]!.solved, true, "alice using the id first does not void bob's");
+});
+
 test("reset drops players who left and re-seats the host", () => {
   let s = running();
   s = game.leave(s, ALICE.id, OPEN + 1);

@@ -67,7 +67,7 @@ export const api = {
 /** A sentence for a person, for every documented ErrorCode. */
 export function explain(err) {
   switch (err?.code) {
-    case "network": return "Can't reach the server. Trying again shortly.";
+    case "network": return "Can't reach the server. Try again in a moment.";
     case "unauthorized": return "You've been signed out. Enter your name to continue.";
     case "invite_required": return "That invite code isn't right.";
     case "name_taken": return "That name is taken. Pick another, or use your login link if it's yours.";

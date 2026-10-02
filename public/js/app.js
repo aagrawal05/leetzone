@@ -1,6 +1,7 @@
 // Router and boot. Each view module exports mount(root, params), which may
 // return a function to call when the view is replaced.
 
+import { api } from "./api.js";
 import * as session from "./session.js";
 import { copy, toast } from "./ui/format.js";
 import { h, replace, text } from "./ui/dom.js";
@@ -15,10 +16,11 @@ const routes = [
 const view = document.getElementById("view");
 let unmount = null;
 let renders = 0;
+let shown = null;
 
 async function render() {
   const turn = ++renders;
-  const path = location.pathname;
+  const path = shown = location.pathname;
   const route = routes.find((r) => r.pattern.test(path));
   for (const a of document.querySelectorAll("[data-nav]")) {
     if (a.dataset.nav === route?.nav) a.setAttribute("aria-current", "page");
@@ -64,7 +66,8 @@ document.addEventListener("click", (event) => {
   navigate(a.pathname);
   view.focus({ preventScroll: true });
 });
-window.addEventListener("popstate", render);
+// A hash-only change (the skip link, a login link) is not a route change.
+window.addEventListener("popstate", () => { if (location.pathname !== shown) render(); });
 
 // ---- header and footer -----------------------------------------------------
 
@@ -88,8 +91,12 @@ document.getElementById("who-copy").addEventListener("click", () => {
   closeMenu();
   copy(session.loginLink(), "login link copied: open it on another device to sign in as you");
 });
-document.getElementById("who-out").addEventListener("click", () => {
+document.getElementById("who-out").addEventListener("click", async () => {
   closeMenu();
+  if (!confirm("Sign out? This browser will forget you. Without your login link you cannot get this name or its stats back.")) return;
+  // Leave first, so a lobby is not left waiting on a player who cannot return.
+  const code = session.currentLobby();
+  if (code) await api.leave(code).catch(() => {});
   session.signOut();
   navigate("/");
 });
@@ -114,12 +121,19 @@ session.onChange((what) => {
   if (what === "identity") render();
 });
 
+function announce(link) {
+  if (link === "ok") toast(`signed in as ${session.player().name}`);
+  if (link === "bad") toast("That login link didn't work.", "bad");
+  if (link === "busy") toast(`You're signed in as ${session.player().name}. Sign out first to use a login link.`, "bad");
+}
+// A login link opened in a tab that is already on the site.
+window.addEventListener("hashchange", () => session.consumeLoginLink().then(announce));
+
 const booting = session.boot();
 frame();
 render();
 booting.then((link) => {
-  if (link === "ok") toast(`signed in as ${session.player().name}`);
-  if (link === "bad") toast("That login link didn't work.", "bad");
+  announce(link);
   // The extension may have announced itself before the listener was attached.
   frame();
 });

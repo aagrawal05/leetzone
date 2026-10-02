@@ -13,11 +13,12 @@ export function bar(fraction) {
   );
 }
 
-/** A round number at or above `max` that divides into `steps` tidy ticks. */
+/** A round number at or above `max` that divides into `steps` tidy ticks.
+ *  Ticks are whole numbers (scores are), so no two labels read the same. */
 function ceiling(max, steps) {
-  const rough = Math.max(max, 1) / steps;
+  const rough = Math.max(max / steps, 1);
   const pow = 10 ** Math.floor(Math.log10(rough));
-  const unit = [1, 2, 2.5, 5, 10].find((m) => m * pow >= rough) * pow;
+  const unit = [1, 2, 2.5, 5, 10].find((m) => m * pow >= rough && Number.isInteger(m * pow)) * pow;
   return unit * steps;
 }
 

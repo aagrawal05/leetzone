@@ -29,6 +29,11 @@ export interface Score {
 
 const clamp01 = (x: number): number => (Number.isFinite(x) ? Math.min(1, Math.max(0, x)) : 0);
 
+/** Half rounds up even when floating point lands a hair under it (47.5 computed
+ *  as 47.49999999999999). The nudge is far smaller than one test case or one
+ *  millisecond is worth, so nothing else changes. */
+const round = (x: number): number => Math.round(x + 1e-9);
+
 export function scoreQuestion(input: ScoreInput): Score {
   const base = BASE_POINTS[input.difficulty];
   const accuracy = input.solved ? 1 : clamp01(input.accuracy);
@@ -41,13 +46,13 @@ export function scoreQuestion(input: ScoreInput): Score {
   const penalty = base * Math.min(MAX_PENALTY, WRONG_PENALTY * wrong);
 
   return {
-    points: Math.max(0, Math.round(accuracyPoints + speedPoints - penalty)),
+    points: Math.max(0, round(accuracyPoints + speedPoints - penalty)),
     // Rounded for display. `points` is rounded from the exact sum, so the terms
     // can be off by one against it.
     breakdown: {
-      accuracy: Math.round(accuracyPoints),
-      speed: Math.round(speedPoints),
-      penalty: Math.round(penalty),
+      accuracy: round(accuracyPoints),
+      speed: round(speedPoints),
+      penalty: round(penalty),
     },
   };
 }

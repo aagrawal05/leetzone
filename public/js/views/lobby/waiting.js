@@ -22,7 +22,11 @@ export function create(ctx) {
   const playerRow = () => h("li", h("span.dot", { "aria-hidden": "true" }), h("span.pname"), h("span.muted.small"));
 
   const pool = h("p.pool");
-  const start = h("button.primary", { type: "button", onclick: () => ctx.act(() => api.start(ctx.code)) }, "start match");
+  // A setting changed a moment ago must reach the server before the match starts.
+  const start = h("button.primary", {
+    type: "button",
+    onclick: () => ctx.act(async () => { await config.flush(); return api.start(ctx.code); }),
+  }, "start match");
   const reason = h("span.muted.small");
   const leave = h("button.quiet", { type: "button", onclick: () => ctx.act(() => api.leave(ctx.code)) }, "leave");
   const join = h("button.primary", { type: "button", onclick: () => ctx.act(() => api.join(ctx.code)) }, "join lobby");

@@ -83,11 +83,12 @@ export async function recordMatch(db: D1Database, match: MatchRecord): Promise<v
   await db.batch(statements);
 }
 
-// Totals are computed on read. A win is rank 1 in a match with at least two players.
+// Totals are computed on read. A win is rank 1 with a score above zero in a
+// match with at least two players.
 const TOTALS = `
   SELECT p.id AS playerId, p.name AS name,
          COUNT(*) AS matches,
-         SUM(CASE WHEN mp.rank = 1 AND m.player_count >= 2 THEN 1 ELSE 0 END) AS wins,
+         SUM(CASE WHEN mp.rank = 1 AND mp.score > 0 AND m.player_count >= 2 THEN 1 ELSE 0 END) AS wins,
          SUM(mp.score) AS totalScore,
          AVG(mp.score) AS avgScore,
          SUM(mp.solved) AS solved,

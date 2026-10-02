@@ -27,7 +27,9 @@ export function create() {
 
   function update(snapshot) {
     const names = new Map(snapshot.players.map((p) => [p.id, p.name]));
-    const items = [...snapshot.feed].sort((a, b) => b.id - a.id).slice(0, SHOWN);
+    // Someone who came and went before the match started is no longer a player.
+    const items = snapshot.feed.filter((item) => item.playerId == null || names.has(item.playerId))
+      .sort((a, b) => b.id - a.id).slice(0, SHOWN);
     empty.hidden = items.length > 0;
     keyed(list, items, (item) => item.id, () => h("li", h("time.muted"), h("span")), (li, item) => {
       li.dataset.kind = item.kind;
