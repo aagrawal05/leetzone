@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "LeetZone",
+  "version": "0.1.0",
+  "description": "Competitive LeetCode with friends. Reports your LeetCode submissions to your LeetZone lobby and shows the match clock.",
+  "minimum_chrome_version": "120",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuPa/bG4TdIJ3OHYwH7GzMYN+U8IQOhxJ4nfbNOWjaREoIX6y+Se4RfycMwGElMy8Ma8EXaHOJVuD2UUxLc/9CM2cP4z+XrkduA3oJJPrwWZdjnM9byBk7OVI4SgUwdbrd3fgdvDswLdgmFC9WaLGtJSsXWUZsEGdkTEV4qbIoyQHAnLF+ILscMsDNQQof+qERBZTeHbAlRx9zCQZecBOZNvaI1QTM4lq4s0iuWiPAzKdlhNReXR2PA2UgGfdzn0VqbEfyK6WzhvA38HsWA8A06AX4T67Mt7s3OeM799FAB4md0aDtoy6uYnQICCrNK3qdVqNyEDY2CI2W9KhlV93BwIDAQAB",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_title": "LeetZone",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://leetzone.adityagrawal.com/*",
+    "http://localhost:8787/*",
+    "http://127.0.0.1:8787/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.com/*"
+      ],
+      "js": [
+        "content/hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://leetcode.com/*"
+      ],
+      "js": [
+        "content/judge.js",
+        "content/hud-model.js",
+        "content/hud-style.js",
+        "content/hud.js",
+        "content/leetcode.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://leetzone.adityagrawal.com/*",
+        "http://localhost:8787/*",
+        "http://127.0.0.1:8787/*"
+      ],
+      "js": [
+        "content/site-bridge.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

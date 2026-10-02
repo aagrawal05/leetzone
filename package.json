@@ -1,0 +1,21 @@
+{
+  "name": "leetzone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types",
+    "typecheck": "wrangler types && tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\" \"test/**/*.test.mjs\"",
+    "sync:catalog": "node scripts/sync-catalog.mjs data",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "ext:zip": "cd extension && zip -qr ../leetzone-extension.zip . -x '.*' -x '*/.*'"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "^5.9",
+    "wrangler": "^4.127.1"
+  }
+}

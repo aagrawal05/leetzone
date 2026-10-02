@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>leetzone</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23c2410c'/%3E%3Cpath d='M5 3.5v9h6' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#view">skip to content</a>
+
+  <header class="top">
+    <a class="wordmark" href="/">leetzone</a>
+    <nav aria-label="main">
+      <a href="/" data-nav="play">play</a>
+      <a href="/leaderboard" data-nav="leaderboard">leaderboard</a>
+    </nav>
+    <div class="who" id="who" hidden>
+      <button type="button" class="who-name" id="who-name" aria-haspopup="true" aria-expanded="false" aria-controls="who-menu"></button>
+      <div class="who-menu" id="who-menu" hidden>
+        <a id="who-profile" href="/">profile</a>
+        <button type="button" id="who-copy">copy login link</button>
+        <button type="button" id="who-out">sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1">
+    <p class="muted">loading</p>
+  </main>
+
+  <footer class="bottom">
+    <span id="ext-status" class="muted"></span>
+  </footer>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <noscript><p class="notice">leetzone needs JavaScript.</p></noscript>
+</body>
+</html>

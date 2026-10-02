@@ -1,0 +1,37 @@
+/* Tokens match the site and the HUD (content/hud-style.js). */
+:root {
+  --bg: #ffffff; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e0; --surface: #f6f6f3;
+  --accent: #c2410c; --good: #15803d;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e10; --fg: #e8e6e3; --muted: #8f8f8f; --line: #2a2a2e; --surface: #17171a;
+    --accent: #fb923c; --good: #4ade80;
+  }
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  width: 280px;
+  font: 13px/1.6 ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", monospace;
+  color: var(--fg); background: var(--bg);
+}
+header {
+  display: flex; gap: 8px; align-items: baseline; padding: 8px 12px;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+main { display: grid; gap: 8px; padding: 12px; }
+.mark { color: var(--accent); font-weight: 700; }
+.grow { flex: 1; }
+.muted { color: var(--muted); }
+.live { color: var(--good); }
+strong { font-weight: 600; }
+button {
+  font: inherit; color: var(--accent); background: none; cursor: pointer;
+  margin-top: 4px; padding: 6px 10px; border: 1px solid var(--accent); border-radius: 6px;
+  transition: background-color 120ms ease-out;
+}
+button:hover { background: var(--surface); }
+button:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
