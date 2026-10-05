@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>LeetZone store submission</title>
+<!-- A local helper for filling the Chrome Web Store dashboard, which no
+     automation can drive: every answer from docs/STORE.md with a copy button,
+     in dashboard order. Open this file in a browser; it loads nothing. -->
+<style>
+  :root { --bg: #fff; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e0; --surface: #f6f6f3; --accent: #c2410c; --good: #15803d; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0e0e10; --fg: #e8e6e3; --muted: #8f8f8f; --line: #2a2a2e; --surface: #17171a; --accent: #fb923c; --good: #4ade80; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; max-width: 820px; padding: 24px 20px 64px; background: var(--bg); color: var(--fg);
+         font: 14px/1.6 ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  h2 { font-size: 13px; font-weight: 400; color: var(--accent); margin: 32px 0 10px; text-transform: lowercase; }
+  p { margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .field { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 10px; }
+  .field header { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--surface); border-bottom: 1px solid var(--line); border-radius: 6px 6px 0 0; }
+  .field header span { flex: 1; }
+  .field pre { margin: 0; padding: 10px; white-space: pre-wrap; word-break: break-word; font: inherit; font-size: 13px; }
+  button { font: inherit; font-size: 12px; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 6px; padding: 2px 10px; cursor: pointer; }
+  button.done { color: var(--good); border-color: var(--good); }
+  ul { margin: 0 0 10px; padding-left: 2ch; }
+  code { font: inherit; background: var(--surface); padding: 0 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<h1>LeetZone: Chrome Web Store submission</h1>
+<p class="muted">Copy, then paste into the dashboard. Fields go in dashboard order. Files are in the repo's <code>dist/</code> and <code>store/</code>.</p>
+
+<h2>1. package</h2>
+<p>Dashboard: <b>New item</b> → upload <code>dist/leetzone-1.0.0.zip</code>. The name and summary come from the zip.</p>
+
+<h2>2. store listing</h2>
+<div class="field"><header><span>Description</span><button>copy</button></header><pre>LeetZone turns LeetCode into a race between friends.
+
+Make a lobby on leetzone.adityagrawal.com, pick the difficulty, topics, number of questions and the clock, and share the code. When the match starts, everyone solves the same real LeetCode problems on leetcode.com. This extension watches your submissions there and scores them as LeetCode judges them: faster solves, fewer wrong attempts and more test cases passed earn more points. The scoreboard updates live for everyone.
+
+On a LeetCode problem page, a small panel shows the match clock, the current question and the scoreboard. Drag it anywhere or fold it away.
+
+- Per-question rounds or one clock for the whole match
+- Easy, Medium and Hard, any LeetCode topics, 1 to 10 questions
+- Points for accuracy and speed, minus a penalty for wrong submissions
+- A leaderboard and score history across matches
+
+What it reads: only the results LeetCode returns for your own submissions (problem, verdict, test cases passed, language). It never reads or sends your code, and it talks only to the LeetZone server. Privacy policy: https://leetzone.adityagrawal.com/privacy
+
+LeetZone is an independent project and is not affiliated with or endorsed by LeetCode.</pre></div>
+<p>Category: <b>Education</b> · Language: <b>English</b></p>
+<p>Images from <code>store/</code>: store icon <code>icon-128.png</code> · screenshots <code>screenshot-1.png</code> to <code>screenshot-5.png</code> in order · small promo tile <code>promo-small-440x280.png</code> · marquee <code>promo-marquee-1400x560.png</code></p>
+<div class="field"><header><span>Homepage URL</span><button>copy</button></header><pre>https://leetzone.adityagrawal.com/</pre></div>
+<div class="field"><header><span>Support URL</span><button>copy</button></header><pre>https://leetzone.adityagrawal.com/privacy</pre></div>
+
+<h2>3. privacy practices</h2>
+<div class="field"><header><span>Single purpose description</span><button>copy</button></header><pre>Scores your LeetCode submissions in a LeetZone match with friends: it reads the verdict LeetCode returns for each of your submissions on leetcode.com, sends it to your LeetZone lobby, and shows the match clock and scoreboard on the problem page.</pre></div>
+<div class="field"><header><span>Justification: storage</span><button>copy</button></header><pre>Keeps the player's LeetZone session (display name, login token, current lobby), copied from the LeetZone site, so the extension can report on the player's behalf; also remembers where the player put the on-page panel.</pre></div>
+<div class="field"><header><span>Justification: host permissions (covers leetzone.adityagrawal.com and the leetcode.com content scripts)</span><button>copy</button></header><pre>https://leetzone.adityagrawal.com/* is the LeetZone server: the background script sends each judged submission result to the player's lobby and fetches the live scoreboard from this one origin only, and a content script there picks up the player's session when they sign in. The content scripts on https://leetcode.com/* read the verdict LeetCode returns for the player's own submissions (by observing the page's submit and result responses) and show the match clock and scoreboard on problem pages. They match all of leetcode.com because LeetCode navigates between pages without reloading, so a script that only matched problem URLs would miss problems opened from other pages.</pre></div>
+<p>Remote code: <b>No, I am not using remote code</b>.</p>
+<p>Data usage, tick these four, leave the rest unticked:</p>
+<ul>
+  <li>Personally identifiable information</li>
+  <li>Authentication information</li>
+  <li>User activity</li>
+  <li>Website content</li>
+</ul>
+<p>Tick all three certifications.</p>
+<div class="field"><header><span>Privacy policy URL</span><button>copy</button></header><pre>https://leetzone.adityagrawal.com/privacy</pre></div>
+
+<h2>4. distribution</h2>
+<p>Visibility <b>Unlisted</b> · all regions · free.</p>
+
+<h2>5. test instructions</h2>
+<div class="field"><header><span>Test instructions (replace INVITE_CODE with yours after pasting)</span><button>copy</button></header><pre>LeetZone needs an invite code to create a player. Invite code: INVITE_CODE
+
+1. Install the extension and open https://leetzone.adityagrawal.com
+2. Enter any name and the invite code, then click "create lobby". The site footer shows "extension connected".
+3. Open any problem on https://leetcode.com/problems/ - the LeetZone panel appears with the lobby.
+4. To play a match, open the lobby link in a second browser profile, create a second player, and press "start match" in the first. Submit a solution on the picked problem: the panel and the site scoreboard update with the verdict.</pre></div>
+
+<h2>6. submit</h2>
+<p><b>Submit for review</b>, then send Claude the 32-letter item ID from the dashboard URL.</p>
+
+<script>
+  // Clipboard API first; the textarea fallback covers contexts where it is unavailable.
+  for (const button of document.querySelectorAll(".field button")) {
+    button.addEventListener("click", async () => {
+      const text = button.closest(".field").querySelector("pre").textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const area = Object.assign(document.createElement("textarea"), { value: text });
+        document.body.append(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      button.textContent = "copied";
+      button.classList.add("done");
+    });
+  }
+</script>
+</body>
+</html>
