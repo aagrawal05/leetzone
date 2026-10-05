@@ -158,3 +158,9 @@ Premium), commit the result, and deploy.
   [`extension/content/hook.js`](extension/content/hook.js) and
   [`extension/content/judge.js`](extension/content/judge.js), with tests in
   `test/extension/`.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Not affiliated with or endorsed by LeetCode;
+`data/` holds only problem titles, numbers, difficulties and topic tags from
+LeetCode's public problem list, never problem statements.
