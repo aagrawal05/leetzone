@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>leetzone marquee 1400x560</title>
+<!-- Chrome Web Store marquee promo tile. Render at exactly 1400x560, device
+     scale factor 1, to store/promo-marquee-1400x560.png. The panel on the
+     right is a 1:1 crop of screenshot-1.png (the extension's HUD on a real
+     leetcode.com problem page), so render after that screenshot exists. -->
+<style>
+  :root { --bg: #0e0e10; --fg: #e8e6e3; --muted: #8f8f8f; --line: #2a2a2e; --accent: #fb923c; }
+  html, body { margin: 0; }
+  body {
+    position: relative; width: 1400px; height: 560px; overflow: hidden;
+    background: var(--bg); color: var(--fg);
+    font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+  .brand {
+    position: absolute; left: 112px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  }
+  .mark { width: 69px; height: 72px; display: block; }
+  .wordmark { margin-top: 34px; font-size: 84px; line-height: 1; font-weight: 700; letter-spacing: -0.02em; }
+  .wordmark span { color: var(--accent); }
+  .line { margin-top: 26px; font-size: 26px; line-height: 1; color: var(--muted); letter-spacing: 0.01em; }
+  /* A window onto the real page, flush with the right edge and running off
+     the bottom. Shows page pixels x 648..1280, y 56.. of screenshot-1.png. */
+  .shot {
+    position: absolute; left: 768px; top: 64px; width: 632px; height: 520px;
+    background: url("screenshot-1.png") -648px -56px no-repeat;
+    border: 1px solid var(--line); border-right: 0; border-bottom: 0;
+    border-top-left-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <!-- The bracket-dot mark from extension/icons/icon.svg, cropped to its artwork. -->
+    <svg class="mark" viewBox="14 12 100 104" aria-hidden="true">
+      <g fill="none" stroke="#fb923c" stroke-width="16" stroke-linecap="square" stroke-linejoin="miter">
+        <path d="M44 20H22v88h22"/>
+        <path d="M84 20h22v88H84"/>
+      </g>
+      <circle cx="64" cy="64" r="14" fill="#fb923c"/>
+    </svg>
+    <div class="wordmark">leetzone<span>_</span></div>
+    <div class="line">Race your friends on LeetCode.</div>
+  </div>
+  <div class="shot" role="img" aria-label="The LeetZone panel on a leetcode.com problem page"></div>
+</body>
+</html>

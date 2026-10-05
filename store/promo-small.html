@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>leetzone promo tile 440x280</title>
+<!-- Chrome Web Store small promo tile. Render at exactly 440x280, device
+     scale factor 1, to store/promo-small-440x280.png. -->
+<style>
+  :root { --bg: #0e0e10; --fg: #e8e6e3; --muted: #8f8f8f; --accent: #fb923c; }
+  html, body { margin: 0; }
+  body {
+    width: 440px; height: 280px; overflow: hidden;
+    background: var(--bg); color: var(--fg);
+    font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", monospace;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mark { width: 50px; height: 52px; display: block; }
+  .wordmark { margin-top: 22px; font-size: 42px; line-height: 1; font-weight: 700; letter-spacing: -0.02em; }
+  .wordmark span { color: var(--accent); }
+  .line { margin-top: 18px; font-size: 16px; line-height: 1; color: var(--muted); letter-spacing: 0.01em; }
+</style>
+</head>
+<body>
+  <!-- The bracket-dot mark from extension/icons/icon.svg, cropped to its artwork. -->
+  <svg class="mark" viewBox="14 12 100 104" aria-hidden="true">
+    <g fill="none" stroke="#fb923c" stroke-width="16" stroke-linecap="square" stroke-linejoin="miter">
+      <path d="M44 20H22v88h22"/>
+      <path d="M84 20h22v88H84"/>
+    </g>
+    <circle cx="64" cy="64" r="14" fill="#fb923c"/>
+  </svg>
+  <div class="wordmark">leetzone<span>_</span></div>
+  <div class="line">Race your friends on LeetCode.</div>
+</body>
+</html>
