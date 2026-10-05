@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "LeetZone",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Competitive LeetCode with friends. Reports your LeetCode submissions to your LeetZone lobby and shows the match clock.",
+  "homepage_url": "https://leetzone.adityagrawal.com/",
   "minimum_chrome_version": "120",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuPa/bG4TdIJ3OHYwH7GzMYN+U8IQOhxJ4nfbNOWjaREoIX6y+Se4RfycMwGElMy8Ma8EXaHOJVuD2UUxLc/9CM2cP4z+XrkduA3oJJPrwWZdjnM9byBk7OVI4SgUwdbrd3fgdvDswLdgmFC9WaLGtJSsXWUZsEGdkTEV4qbIoyQHAnLF+ILscMsDNQQof+qERBZTeHbAlRx9zCQZecBOZNvaI1QTM4lq4s0iuWiPAzKdlhNReXR2PA2UgGfdzn0VqbEfyK6WzhvA38HsWA8A06AX4T67Mt7s3OeM799FAB4md0aDtoy6uYnQICCrNK3qdVqNyEDY2CI2W9KhlV93BwIDAQAB",
   "icons": {

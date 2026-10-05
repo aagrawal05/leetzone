@@ -7,3 +7,4 @@ node_modules/
 worker-configuration.d.ts
 dist/
 leetzone-extension.zip
+leetzone-extension/

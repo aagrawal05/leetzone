@@ -199,13 +199,6 @@ test("pollVerdict: always gives up - forever PENDING, repeated failures, judge f
   assert.equal(j.calls.length, 2);
 });
 
-test("fetchLcUsername: signed in, signed out, broken", async () => {
-  const ask = (route) => judge(route).run("fetchLcUsername")();
-  assert.equal(await ask(() => ({ body: { data: { userStatus: { username: "alice", isSignedIn: true } } } })), "alice");
-  assert.equal(await ask(() => ({ body: { data: { userStatus: { username: "", isSignedIn: false } } } })), null);
-  assert.equal(await ask(() => "throw"), null);
-});
-
 // ---- leetcode.js ----------------------------------------------------------
 
 const SESSION = { server: "http://localhost:8787", token: "t", player: { id: "a", name: "a" }, lobbyCode: "ABCDE" };
@@ -240,7 +233,7 @@ async function page(pathname, storage, route) {
       storage: { local: { get: async () => ({ session: SESSION }), set: async () => {} }, onChanged: { addListener() {} } },
     },
     fetch: async (url) => {
-      if (url !== "/graphql/") checks.push(url);
+      checks.push(url);
       return { ok: true, status: 200, json: async () => await route(url) };
     },
     createHud: () => hudStub,
@@ -251,22 +244,21 @@ async function page(pathname, storage, route) {
   const hook = (data) => listeners.message({ source: window, origin: "https://leetcode.com", data: { source: "leetzone-hook", ...data } });
   return { reports, checks, hook };
 }
-const NAME = { data: { userStatus: { username: "alice", isSignedIn: true } } };
 const pendingIds = (storage) => JSON.parse(storage.get("leetzone.pending") ?? "[]").map((p) => p.id);
 
 test("leetcode.js: a submission still being judged survives a full page load", async () => {
   const storage = new Map();
-  const first = await page("/problems/two-sum/", storage, () => NAME);
+  const first = await page("/problems/two-sum/", storage, () => FINAL);
   first.hook({ type: "submit", slug: "two-sum", submissionId: "777", lang: "cpp" });
   assert.deepEqual(pendingIds(storage), ["777"]);
 
   // The player follows a HUD link: a new document, on another question.
   const stale = { id: "5", slug: "3sum", lang: null, at: Date.now() - 10 * 60_000 };
   storage.set("leetzone.pending", JSON.stringify([...JSON.parse(storage.get("leetzone.pending")), stale, { id: "x" }]));
-  const next = await page("/problems/lru-cache/", storage, (url) => (url === "/graphql/" ? NAME : FINAL));
+  const next = await page("/problems/lru-cache/", storage, () => FINAL);
   await until(() => next.reports.length === 1);
   assert.deepEqual(plain(next.reports[0]), {
-    slug: "two-sum", submissionId: "777", statusCode: 10, statusMsg: "Accepted", totalCorrect: 5, totalTestcases: 5, lang: "cpp", lcUsername: "alice",
+    slug: "two-sum", submissionId: "777", statusCode: 10, statusMsg: "Accepted", totalCorrect: 5, totalTestcases: 5, lang: "cpp",
   });
   assert.deepEqual(next.checks, ["/submissions/detail/777/v2/check/"], "old and malformed entries are not polled");
   assert.deepEqual(pendingIds(storage), []);
@@ -275,7 +267,7 @@ test("leetcode.js: a submission still being judged survives a full page load", a
 
 test("leetcode.js: the hook's verdict clears the pending entry; a judge error does too", async () => {
   const storage = new Map();
-  const p = await page("/problems/two-sum/", storage, () => NAME);
+  const p = await page("/problems/two-sum/", storage, () => FINAL);
   p.hook({ type: "submit", slug: "two-sum", submissionId: "1", lang: "cpp" });
   p.hook({ type: "submit", slug: "two-sum", submissionId: "2", lang: "cpp" });
   assert.deepEqual(pendingIds(storage), ["1", "2"]);
@@ -286,18 +278,11 @@ test("leetcode.js: the hook's verdict clears the pending entry; a judge error do
   assert.deepEqual(p.reports.map((r) => r.submissionId), ["1"]);
 });
 
-test("leetcode.js: a report never waits for the LeetCode username", async () => {
-  let answer;
-  const asked = new Promise((resolve) => (answer = resolve));
-  const p = await page("/problems/two-sum/", new Map(), () => asked); // GraphQL hangs
-  const verdict = { type: "result", slug: "two-sum", statusCode: 10, statusMsg: "Accepted", totalCorrect: 5, totalTestcases: 5, lang: "cpp" };
+test("leetcode.js: a report carries only the verdict and asks LeetCode nothing else", async () => {
+  const p = await page("/problems/two-sum/", new Map(), () => FINAL);
   p.hook({ type: "submit", slug: "two-sum", submissionId: "1", lang: "cpp" });
-  p.hook({ ...verdict, submissionId: "1" });
+  p.hook({ type: "result", slug: "two-sum", submissionId: "1", statusCode: 10, statusMsg: "Accepted", totalCorrect: 5, totalTestcases: 5, lang: "cpp" });
   assert.equal(p.reports.length, 1, "sent in the same turn as the verdict");
-  assert.equal(p.reports[0].lcUsername, null);
-
-  answer(NAME);
-  await new Promise((r) => setTimeout(r, 5));
-  p.hook({ ...verdict, submissionId: "2" });
-  assert.equal(p.reports[1].lcUsername, "alice");
+  assert.deepEqual(Object.keys(p.reports[0]).sort(), ["lang", "slug", "statusCode", "statusMsg", "submissionId", "totalCorrect", "totalTestcases"]);
+  assert.deepEqual(p.checks, [], "no request to LeetCode beyond the page's own");
 });

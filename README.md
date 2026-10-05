@@ -85,19 +85,21 @@ npm run typecheck
 
 Chrome (or any Chromium browser), version 120 or newer.
 
-1. Get the `extension/` folder: clone this repo, or unzip the file made by
-   `npm run ext:zip`, somewhere it can stay.
-2. Open `chrome://extensions`, turn on **Developer mode**, click
-   **Load unpacked**, and choose the `extension` folder.
-3. Open LeetZone. The footer should say the extension is connected.
+Friends install it from the Chrome Web Store (the listing is unlisted: the link
+is the way in). For development, load the `extension/` folder unpacked: open
+`chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and
+choose `extension`. Then open LeetZone; the footer should say the extension is
+connected.
 
-The extension follows whichever LeetZone you are signed in to, production or
-`localhost:8787`, with nothing to configure. After updating its files, press
-the reload button on its card in `chrome://extensions` and refresh any open
-LeetCode tabs.
+The unpacked copy follows whichever LeetZone you are signed in to, production
+or `localhost:8787`, with nothing to configure; the store build talks to
+production only. After changing its files, press the reload button on its card
+in `chrome://extensions` and refresh any open LeetCode tabs.
 
 It asks for one permission, `storage`, and talks only to the LeetZone server.
-On leetcode.com it watches the page's own submit and result requests; it never
+`npm run ext:pack` builds the store upload into `dist/`; everything the store
+dashboard asks for is in [`docs/STORE.md`](docs/STORE.md), and the privacy
+policy is `public/privacy.html`. On leetcode.com it watches the page's own submit and result requests; it never
 reads or sends your code.
 
 ## Deploy

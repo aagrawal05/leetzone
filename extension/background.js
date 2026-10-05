@@ -105,7 +105,6 @@ function cleanReport(r) {
     totalCorrect: count(r.totalCorrect),
     totalTestcases: count(r.totalTestcases),
     lang: str(r.lang, 32) || null,
-    lcUsername: str(r.lcUsername, 64) || null,
   };
   return report.slug && report.submissionId && Number.isInteger(report.statusCode) ? report : null;
 }

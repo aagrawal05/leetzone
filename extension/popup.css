@@ -24,6 +24,8 @@ main { display: grid; gap: 8px; padding: 12px; }
 .grow { flex: 1; }
 .muted { color: var(--muted); }
 .live { color: var(--good); }
+.note { margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; line-height: 1.5; }
+a { color: inherit; text-underline-offset: 2px; }
 strong { font-weight: 600; }
 button {
   font: inherit; color: var(--accent); background: none; cursor: pointer;

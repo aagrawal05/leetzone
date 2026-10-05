@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>leetzone - privacy</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23c2410c'/%3E%3Cpath d='M5 3.5v9h6' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .policy { display: grid; gap: 14px; padding: 28px 0 40px; max-width: 68ch; }
+    .policy h2 { margin-top: 14px; }
+    .policy ul { display: grid; gap: 6px; padding-left: 2ch; list-style: "- "; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="wordmark" href="/">leetzone</a>
+  </header>
+
+  <main class="policy">
+    <h1>Privacy</h1>
+    <p class="muted">Covers the LeetZone site and the LeetZone browser extension. Last updated 5 October 2026.</p>
+
+    <p>LeetZone is a small game for playing LeetCode against friends, run by Aditya
+    Agrawal. It collects only what it needs to run lobbies and keep score, never
+    sells or shares it, and shows no ads.</p>
+
+    <h2>What the site keeps</h2>
+    <ul>
+      <li>The display name you choose.</li>
+      <li>A login token the server creates for you. Your browser keeps the token;
+        the server stores only a one-way hash of it.</li>
+      <li>Lobbies and matches: who played, which LeetCode problems were picked, and
+        for each of your judged submissions to those problems its verdict, how many
+        test cases passed, the language, and when it arrived. Scores are computed
+        from these.</li>
+    </ul>
+    <p>Names, scores and match results are visible to other players and on the
+    leaderboard and profile pages.</p>
+
+    <h2>What the extension does</h2>
+    <ul>
+      <li>On leetcode.com, it watches the responses LeetCode sends back when you
+        submit a solution and reads the verdict: problem, status, test cases passed,
+        language and submission number.</li>
+      <li>Only while you are in a LeetZone lobby, it sends those results to the
+        LeetZone server with your login token, and shows the match clock and
+        scoreboard on the page. The server ignores results for problems that are not
+        an open question in your match.</li>
+      <li>On the LeetZone site, it copies your LeetZone session (name, login token,
+        current lobby) into the extension's own storage, so it can report for you.
+        It also remembers where you put its panel.</li>
+    </ul>
+    <p>It never reads or sends your code, your LeetCode account details or
+    password, or anything from other websites. It talks only to the LeetZone
+    server.</p>
+
+    <h2>Who else sees it</h2>
+    <p>LeetZone runs on Cloudflare, which processes standard request data such as
+    IP addresses to serve and protect the site, and keeps request logs for a few
+    days. No analytics, trackers, advertising or other third parties. The site sets
+    no cookies.</p>
+
+    <h2>Keeping and deleting</h2>
+    <p>Data is kept while LeetZone runs. Signing out on the site removes your
+    session from that browser and from the extension. To have your player and
+    results deleted, email <a href="mailto:aditya.agrawal.a.777@gmail.com">aditya.agrawal.a.777@gmail.com</a>.</p>
+
+    <h2>Changes</h2>
+    <p>If what LeetZone collects changes, this page and the date above will say so
+    before the change ships, and the extension will tell you.</p>
+  </main>
+</body>
+</html>

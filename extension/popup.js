@@ -43,6 +43,14 @@ $("open").addEventListener("click", async () => {
   window.close();
 });
 
+$("privacy").addEventListener("click", async (event) => {
+  event.preventDefault();
+  try {
+    await chrome.tabs.create({ url: `${DEFAULT_SERVER}/privacy` });
+  } catch {}
+  window.close();
+});
+
 const session = await load();
 $("version").textContent = "v" + chrome.runtime.getManifest().version;
 

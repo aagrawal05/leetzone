@@ -11,7 +11,7 @@
     "sync:catalog": "node scripts/sync-catalog.mjs data",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "ext:zip": "cd extension && zip -qr ../leetzone-extension.zip . -x '.*' -x '*/.*'"
+    "ext:pack": "node scripts/pack-extension.mjs"
   },
   "devDependencies": {
     "@types/node": "^24",

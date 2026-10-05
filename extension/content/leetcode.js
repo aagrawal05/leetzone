@@ -27,7 +27,6 @@
   let tickTimer = 0;
   let urlTimer = 0;
   let observer = null;
-  let lcUsername; // the LeetCode handle: undefined until asked for, null until known
   const tracked = new Map(); // submissionId -> {slug, lang, at, timer, settled}
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -73,13 +72,6 @@
   }
 
   // ---- submissions --------------------------------------------------------
-  // Profile metadata only: looked up once per page, and never waited for.
-  function askLcUsername() {
-    if (lcUsername !== undefined) return;
-    lcUsername = null;
-    fetchLcUsername().then((name) => (lcUsername = name));
-  }
-
   // What is still being judged is kept per tab, so that a reload or a full
   // navigation (the HUD's own links) before the verdict can pick it up again.
   function savePending() {
@@ -100,7 +92,6 @@
       if (tracked.has(p.id) || typeof p.at !== "number" || !(age >= 0 && age < JUDGE_MAX_MS)) continue;
       const t = { slug: p.slug, lang: typeof p.lang === "string" ? p.lang : null, at: p.at, timer: 0, settled: false };
       tracked.set(p.id, t);
-      askLcUsername();
       watch(p.id, t, 0); // the page that was polling for it is gone
     }
     savePending();
@@ -127,7 +118,6 @@
     if (t.settled) return;
 
     if (msg.type === "submit") {
-      askLcUsername();
       t.at = Date.now();
       watch(id, t, HOOK_GRACE_MS);
       savePending();
@@ -154,7 +144,6 @@
       totalCorrect: count(verdict.totalCorrect),
       totalTestcases: count(verdict.totalTestcases),
       lang: typeof verdict.lang === "string" ? verdict.lang : t.lang,
-      lcUsername: lcUsername ?? null,
     };
     const before = snapshot;
     // Reports are idempotent on submissionId, so a blip is worth retrying.

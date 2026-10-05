@@ -70,24 +70,3 @@ async function pollVerdict(id, fallbackLang, stopped, maxMs = JUDGE_MAX_MS, ever
   }
   return null;
 }
-
-// The signed-in LeetCode handle, or null. Same-origin GraphQL, as the page does.
-async function fetchLcUsername() {
-  try {
-    const csrf = /(?:^|;\s*)csrftoken=([^;]+)/.exec(document.cookie)?.[1] ?? "";
-    const res = await fetch("/graphql/", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "content-type": "application/json", "x-csrftoken": csrf },
-      body: JSON.stringify({
-        operationName: "globalData",
-        query: "query globalData { userStatus { username isSignedIn } }",
-        variables: {},
-      }),
-    });
-    const status = (await res.json())?.data?.userStatus;
-    return status?.isSignedIn && typeof status.username === "string" && status.username ? status.username : null;
-  } catch {
-    return null;
-  }
-}
