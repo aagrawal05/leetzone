@@ -71,7 +71,7 @@ export function create(ctx) {
   const leave = h("button.quiet", { type: "button", onclick: () => confirm("Leave the match? You keep your score and stop holding up the round.") && ctx.act(() => api.leave(ctx.code)) }, "leave");
   // Someone who left keeps their seat and may take it back.
   const rejoin = h("button", { type: "button", onclick: () => ctx.act(() => api.join(ctx.code)) }, "rejoin");
-  const noExt = h("p.notice", "The leetzone extension isn't detected, so your submissions here won't be scored.");
+  const noExt = h("p.notice", "The leetzone extension isn't detected, so your submissions here won't be scored. ", h("a", { href: session.EXTENSION_URL, target: "_blank", rel: "noopener" }, "Install it from the Chrome Web Store"), ".");
 
   const questions = h("section", h("h2"), cards);
   const el = h("div.phase",

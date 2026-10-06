@@ -112,6 +112,7 @@ function frame() {
   const status = document.getElementById("ext-status");
   text(status, version ? `extension ${version} connected` : "extension not detected");
   status.classList.toggle("ok", Boolean(version));
+  document.getElementById("ext-install").hidden = Boolean(version);
 }
 
 // ---- boot ------------------------------------------------------------------

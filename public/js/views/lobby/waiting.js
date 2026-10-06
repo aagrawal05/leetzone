@@ -34,7 +34,7 @@ export function create(ctx) {
 
   // A visitor with no name yet signs up right here; the view remounts on sign-in.
   const signup = session.player() ? null : h("section", nameForm("Pick a name to join this lobby."));
-  const noExt = h("p.notice", "The leetzone extension isn't detected in this browser. Without it your LeetCode submissions can't be scored. Install it, then reload this page.");
+  const noExt = h("p.notice", "The leetzone extension isn't detected in this browser. Without it your LeetCode submissions can't be scored. ", h("a", { href: session.EXTENSION_URL, target: "_blank", rel: "noopener" }, "Install it from the Chrome Web Store"), ", then reload this page.");
 
   const el = h("div.phase",
     h("section", share),

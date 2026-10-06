@@ -85,8 +85,9 @@ npm run typecheck
 
 Chrome (or any Chromium browser), version 120 or newer.
 
-Friends install it from the Chrome Web Store (the listing is unlisted: the link
-is the way in). For development, load the `extension/` folder unpacked: open
+Friends install it from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj)
+(the listing is unlisted: the link is the way in). For development, load the `extension/` folder unpacked: open
 `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and
 choose `extension`. Then open LeetZone; the footer should say the extension is
 connected.
