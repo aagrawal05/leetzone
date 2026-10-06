@@ -7,6 +7,15 @@ the live scoreboard, and a leaderboard over time.
 
 Hosted, unlisted, at https://leetzone.adityagrawal.com.
 
+![The LeetZone panel on a LeetCode problem page during a match: the clock, the current question and the scoreboard](store/screenshot-1.png)
+
+| | |
+|---|---|
+| ![Lobby settings: players, difficulty, topics, question count and clock](store/screenshot-2.png) | ![A running match: the clock, the question cards and the live scoreboard](store/screenshot-3.png) |
+| Lobby settings | A running match |
+| ![Final standings with a podium and per-question results](store/screenshot-4.png) | ![A player profile with totals and a score-per-match chart](store/screenshot-5.png) |
+| Final standings | Score history |
+
 ## How a match goes
 
 1. Everyone installs the extension (below) and opens the site.
