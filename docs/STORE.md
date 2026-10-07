@@ -10,6 +10,7 @@ Everything the developer dashboard asks for, ready to paste. The upload is
 | Field | Value |
 |---|---|
 | Item ID | `nomfblgjdallmehppjfblkheoioclkbj` |
+| Status | Published (unlisted), 6 October 2026 |
 | Listing | https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj |
 | Upload | `dist/leetzone-1.0.0.zip` |
 | Visibility | **Unlisted**: installable by anyone with the link, not searchable. Matches the unlisted site. |

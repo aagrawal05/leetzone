@@ -5,7 +5,8 @@ of questions and a clock, then race on leetcode.com itself. A browser extension
 watches your real LeetCode submissions and scores them; the site shows the lobby,
 the live scoreboard, and a leaderboard over time.
 
-Hosted, unlisted, at https://leetzone.adityagrawal.com.
+Hosted, unlisted, at https://leetzone.adityagrawal.com. Get the extension from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj).
 
 ![The LeetZone panel on a LeetCode problem page during a match: the clock, the current question and the scoreboard](store/screenshot-1.png)
 
@@ -18,7 +19,7 @@ Hosted, unlisted, at https://leetzone.adityagrawal.com.
 
 ## How a match goes
 
-1. Everyone installs the extension (below) and opens the site.
+1. Everyone installs the [extension](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj) and opens the site.
 2. First visit: pick a name and enter the invite code.
 3. One person creates a lobby and shares the 5-character code or the link.
 4. The host sets difficulty, topics, question count and the clock, then starts.
