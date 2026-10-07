@@ -70,7 +70,7 @@ function changed() {
 // ---- extension bridge ------------------------------------------------------
 
 /** The extension's version, or null. site-bridge.js sets this at document_start. */
-/** Where friends install the extension. Unlisted: the link is the only way in. */
+/** Where players install the extension: its Chrome Web Store listing. */
 export const EXTENSION_URL = "https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj";
 export const extensionVersion = () => document.documentElement.dataset.leetzoneExt ?? null;
 

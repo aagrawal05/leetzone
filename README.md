@@ -5,7 +5,7 @@ of questions and a clock, then race on leetcode.com itself. A browser extension
 watches your real LeetCode submissions and scores them; the site shows the lobby,
 the live scoreboard, and a leaderboard over time.
 
-Hosted, unlisted, at https://leetzone.adityagrawal.com. Get the extension from the
+Hosted at https://leetzone.adityagrawal.com (invite-only). Get the extension from the
 [Chrome Web Store](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj).
 
 ![The LeetZone panel on a LeetCode problem page during a match: the clock, the current question and the scoreboard](store/screenshot-1.png)
@@ -95,9 +95,9 @@ npm run typecheck
 
 Chrome (or any Chromium browser), version 120 or newer.
 
-Friends install it from the
-[Chrome Web Store](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj)
-(the listing is unlisted: the link is the way in). For development, load the `extension/` folder unpacked: open
+Install it from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/nomfblgjdallmehppjfblkheoioclkbj).
+For development, load the `extension/` folder unpacked: open
 `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and
 choose `extension`. Then open LeetZone; the footer should say the extension is
 connected.
@@ -158,9 +158,9 @@ Premium), commit the result, and deploy.
 - **Trust.** Reports come from each player's own browser, so a determined
   friend can fake one. That is a deliberate trade for simplicity; see
   "Identity and access" in the design doc for where verification would go.
-- **Unlisted, not private.** Reading is open to anyone with the URL. Creating
-  a player needs the invite code, and everything else that writes needs a
-  player's token.
+- **Invite-only, not private.** The site is kept out of search engines, but
+  reading is open to anyone with the URL. Creating a player needs the invite
+  code, and everything else that writes needs a player's token.
 - **Your token is your account.** It lives in the browser's local storage.
   Use "copy login link" under your name to sign in on another browser; do not
   share that link.

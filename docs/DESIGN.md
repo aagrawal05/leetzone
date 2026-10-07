@@ -186,7 +186,7 @@ to CORS. Auth is a bearer token, never a cookie, so there is nothing for a
 cross-site page to ride on.
 
 Every response, static or API, carries `X-Robots-Tag: noindex, nofollow`, and
-`robots.txt` disallows everything: the site is unlisted.
+`robots.txt` disallows everything: the site stays out of search engines.
 
 ## WebSocket
 
